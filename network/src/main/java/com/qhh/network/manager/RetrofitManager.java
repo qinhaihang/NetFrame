@@ -2,6 +2,7 @@ package com.qhh.network.manager;
 
 import com.qhh.network.common.NetUrl;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -16,18 +17,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @updateDate $Date$
  * @updateDes ${TODO}
  */
-public class RetrofitManager {
+public class RetrofitManager<T> {
 
-    //public final ApiManagerService apiService;
+    public final T apiService;
 
-    public RetrofitManager(boolean isConvert) {
+    public RetrofitManager(boolean isConvert,Class<T> apiService) {
 
         //配置Okhttp网络请求参数
+        OkHttpClient okHttpClient = OkHttpClientManager.getInstance().getNormalOkHttp();
 
         Retrofit.Builder builder = new Retrofit.Builder();
 
         builder.baseUrl(NetUrl.baseUrl);
-        //builder.client(mOkHttpClient);
+        builder.client(okHttpClient);
         builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
         if (isConvert) //TODO:调试使用自己的解析器
             builder.addConverterFactory(GsonConverterFactory.create());
@@ -35,7 +37,7 @@ public class RetrofitManager {
         //builder.addConverterFactory(FastJsonConverterFactory.create());
         Retrofit retrofit = builder.build();
 
-
+        this.apiService = retrofit.create(apiService);
 
     }
 }
