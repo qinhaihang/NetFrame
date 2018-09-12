@@ -1,13 +1,5 @@
 package com.qhh.network.manager;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.qhh.network.common.NetUrl;
-
-import okhttp3.OkHttpClient;
-import retrofit2.CallAdapter;
-import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -45,28 +37,6 @@ public class RetrofitManager {
 
     public <T> T getApiService(Class<T> apiService) {
         return mBuilder.mReBuilder.build().create(apiService);
-    }
-
-    public <T> T getApiService(@Nullable OkHttpClient okHttpClient, @Nullable CallAdapter.Factory rxJavafactory,
-                               @Nullable Converter.Factory factory, @NonNull Class<T> apiService) {
-
-        Retrofit.Builder builder = new Retrofit.Builder();
-
-        builder.baseUrl(NetUrl.baseUrl);
-        if (null != okHttpClient)
-            builder.client(okHttpClient);
-        if (null != rxJavafactory)
-            builder.addCallAdapterFactory(rxJavafactory);
-        if (null != factory)
-            builder.addConverterFactory(factory);
-        //builder.addConverterFactory(GsonConverterFactory.create());
-        //builder.addConverterFactory(MyConverterFactory.create(gson));
-        //builder.addConverterFactory(FastJsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        T api = retrofit.create(apiService);
-
-        return api;
     }
 
     public class Builder {

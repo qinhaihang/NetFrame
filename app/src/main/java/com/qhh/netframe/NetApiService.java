@@ -1,5 +1,10 @@
 package com.qhh.netframe;
 
+import io.reactivex.Observable;
+import okhttp3.ResponseBody;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+
 /**
  * @author admin
  * @version $Rev$
@@ -11,4 +16,8 @@ package com.qhh.netframe;
  * @updateDes ${TODO}
  */
 public interface NetApiService {
+
+    @GET("/article/list/{page}/json")
+    Observable<ResponseBody> getArticals(@Path("page") int page);
+
 }
