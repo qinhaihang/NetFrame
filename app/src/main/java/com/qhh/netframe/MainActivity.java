@@ -2,6 +2,15 @@ package com.qhh.netframe;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import com.qhh.netframe.bean.ArticalsBean;
+import com.qhh.network.custom.GsonConvertObserver;
+import com.qhh.network.custom.NetApiService;
+import com.qhh.network.manager.RetrofitManager;
+import com.qhh.network.rxconfig.RxHelper;
+
+import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,38 +21,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        NetApiService apiService = RetrofitManager.getInstance().getApiService(NetApiService.class);
-//        Observable<ResponseBody> articals = apiService.getArticals(0);
-//        articals.subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new DisposableObserver<ResponseBody>() {
-//                    @Override
-//                    public void onNext(ResponseBody responseBody) {
-//                        BufferedSource bufferedSource = Okio.buffer(responseBody.source());
-//                        String tempStr = "";
-//                        try {
-//                            tempStr = bufferedSource.readUtf8();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            try {
-//                                bufferedSource.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        Log.d(TAG,"tempStr = "+tempStr);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
+        RetrofitManager.getInstance().getApiService(NetApiService.class).getArticals(0)
+                .compose(RxHelper.<okhttp3.ResponseBody>schedulerIOMain())
+                .subscribe(new GsonConvertObserver<ArticalsBean>(ArticalsBean.class) {
+                    @Override
+                    public void onSuccess(ArticalsBean data, String msg) {
+                        Log.d(TAG, data.getSize() + "");
+                    }
+                });
+
+        RetrofitManager.getInstance().getApiService(NetApiService.class).getBanners()
+                .compose(RxHelper.<ResponseBody>schedulerIOMain())
+                .subscribe();
     }
 }

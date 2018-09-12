@@ -1,4 +1,4 @@
-package com.qhh.network.common;
+package com.qhh.network.custom;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -19,5 +19,9 @@ public interface NetApiService {
 
     @GET("/article/list/{page}/json")
     Observable<ResponseBody> getArticals(@Path("page") int page);
+
+
+    @GET("/banner/json")
+    Observable<ResponseBody> getBanners();
 
 }
