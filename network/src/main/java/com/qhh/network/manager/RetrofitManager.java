@@ -1,14 +1,16 @@
 package com.qhh.network.manager;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.qhh.network.common.NetUrl;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author qinhaihang
@@ -20,7 +22,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
  * @updateDate $Date$
  * @updateDes ${TODO}
  */
-public class RetrofitManager<T> {
+public class RetrofitManager {
+
+    private Builder mBuilder;
 
     public static class Holder {
         private static RetrofitManager INSTANCE = new RetrofitManager();
@@ -31,41 +35,20 @@ public class RetrofitManager<T> {
     }
 
     public RetrofitManager() {
-
+        //mBuilder = new Builder(new Retrofit.Builder());
     }
 
-    /**
-     * 不解析数据，默认配置OkHttpClient
-     *
-     * @param apiService
-     * @return
-     */
-    public T getApiService(Class<T> apiService) {
-        //配置Okhttp网络请求参数
-
-        return getApiService(OkHttpClientManager.getInstance().getNormalOkHttp(),
-                RxJava2CallAdapterFactory.create(),
-                null,
-                apiService);
-
+    public Builder build() {
+        mBuilder = new Builder(new Retrofit.Builder());
+        return mBuilder;
     }
 
-    /**
-     * 默认的常规OkHttpClient,可配置的解析工厂
-     * @param factory
-     * @param apiService
-     * @return
-     */
-    public T getApiService(Converter.Factory factory, Class<T> apiService) {
-
-        return getApiService(OkHttpClientManager.getInstance().getNormalOkHttp(),
-                RxJava2CallAdapterFactory.create(),
-                factory,
-                apiService);
+    public <T> T getApiService(Class<T> apiService) {
+        return mBuilder.mReBuilder.build().create(apiService);
     }
 
-    public T getApiService(@Nullable OkHttpClient okHttpClient, @Nullable CallAdapter.Factory rxJavafactory,
-                           @Nullable Converter.Factory factory, @NonNull Class<T> apiService) {
+    public <T> T getApiService(@Nullable OkHttpClient okHttpClient, @Nullable CallAdapter.Factory rxJavafactory,
+                               @Nullable Converter.Factory factory, @NonNull Class<T> apiService) {
 
         Retrofit.Builder builder = new Retrofit.Builder();
 
@@ -85,4 +68,45 @@ public class RetrofitManager<T> {
 
         return api;
     }
+
+    public class Builder {
+
+        public Retrofit.Builder mReBuilder;
+
+        public Builder(Retrofit.Builder builder) {
+            mReBuilder = builder;
+        }
+
+        /**
+         * 必须设置基地址
+         *
+         * @param baseUrl
+         * @return
+         */
+        public Builder setBaseUrl(String baseUrl) {
+            mReBuilder.baseUrl(baseUrl);
+            return this;
+        }
+
+        /**
+         * 设置默认OkHttpClient
+         * @return
+         */
+        public Builder setDefaultOkHttpClient() {
+            mReBuilder.client(OkHttpClientManager.getInstance().getNormalOkHttp());
+            return this;
+        }
+
+        public Builder setRxJavaFactory() {
+            mReBuilder.addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+            return this;
+        }
+
+        public Builder setGsonConvertFactory() {
+            mReBuilder.addConverterFactory(GsonConverterFactory.create());
+            return this;
+        }
+
+    }
+
 }
