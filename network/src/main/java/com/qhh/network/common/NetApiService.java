@@ -1,4 +1,4 @@
-package com.qhh.netframe;
+package com.qhh.network.common;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
