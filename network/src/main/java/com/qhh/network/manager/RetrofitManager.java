@@ -1,5 +1,7 @@
 package com.qhh.network.manager;
 
+import com.google.gson.Gson;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -74,6 +76,14 @@ public class RetrofitManager {
 
         public Builder setGsonConvertFactory() {
             mReBuilder.addConverterFactory(GsonConverterFactory.create());
+            return this;
+        }
+
+        /**
+         * 可通过GsonBuild进行 Gson解析的配置，适配项目后台的数据格式
+         */
+        public Builder setGsonBuildConvertFactory(Gson gson){
+            mReBuilder.addConverterFactory(GsonConverterFactory.create(gson));
             return this;
         }
 

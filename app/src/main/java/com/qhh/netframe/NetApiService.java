@@ -1,4 +1,9 @@
-package com.qhh.network.custom;
+package com.qhh.netframe;
+
+import com.qhh.netframe.bean.BannerBean;
+import com.qhh.network.custom.Result;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -20,8 +25,7 @@ public interface NetApiService {
     @GET("/article/list/{page}/json")
     Observable<ResponseBody> getArticals(@Path("page") int page);
 
-
     @GET("/banner/json")
-    Observable<ResponseBody> getBanners();
+    Observable<Result<List<BannerBean>>> getBanners();
 
 }
